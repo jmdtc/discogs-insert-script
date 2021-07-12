@@ -1,0 +1,17 @@
+services:
+  database:
+    image: "postgres" # use latest official postgres version
+    environment: 
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    ports:
+      - "6000:6000"
+    container_name: postgres-db
+    env_file:
+      - database/.env # configure postgres
+    volumes:
+      - database-data:/var/lib/postgresql/data/ # persist data even if container shuts down
+    command: -p 6000
+volumes:
+  database-data: #
+
+  #docker exec -it postgres-db psql --host=localhost --username=unicorn_user --dbname=rainbow_database
