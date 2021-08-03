@@ -1,3 +1,5 @@
+version: "2.2"
+
 services:
   database:
     image: "postgres" # use latest official postgres version
@@ -11,7 +13,7 @@ services:
     volumes:
       - database-data:/var/lib/postgresql/data/ # persist data even if container shuts down
     command: -p 6000
+    mem_limit: 5G
+
 volumes:
   database-data: #
-
-  #docker exec -it postgres-db psql --host=localhost --username=unicorn_user --dbname=rainbow_database

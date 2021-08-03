@@ -13,11 +13,5 @@ export default (cb: (chunk: object, xml: any) => void) => {
 
     xml.on("endElement: release", async (chunk: object) => {
         cb(chunk, xml)
-        /*
-        try {
-        } catch (error) {
-            console.error(error);
-        }
-        */
     })
 }

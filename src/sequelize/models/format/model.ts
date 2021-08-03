@@ -50,7 +50,7 @@ export const initFormatModel = async function (sequelize: Sequelize): Promise<vo
             underscored: true,
             sequelize
         })
-        await Format.sync({ force: true })
+        await Format.sync({ alter: true })
     } catch (error) {
         console.error(error);
     }

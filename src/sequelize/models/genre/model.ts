@@ -43,7 +43,7 @@ export const initGenreModel = async function (sequelize: Sequelize): Promise<voi
             underscored: true,
             sequelize
         })
-        await Genre.sync({ force: true })
+        await Genre.sync({ alter: true })
     } catch (error) {
         console.error(error)
     }

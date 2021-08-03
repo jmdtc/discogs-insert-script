@@ -48,7 +48,7 @@ export const initLabelModel = async function (sequelize: Sequelize): Promise<voi
             underscored: true,
             sequelize
         })
-        await Label.sync({ force: true })
+        await Label.sync({ alter: true })
     } catch (error) {
         console.error(error);
     }

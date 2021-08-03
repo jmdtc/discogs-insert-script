@@ -43,7 +43,7 @@ export const initStyleModel = async function (sequelize: Sequelize): Promise<voi
             underscored: true,
             sequelize
         })
-        await Style.sync({ force: true })
+        await Style.sync({ alter: true })
     } catch (error) {
         console.error(error)
     }

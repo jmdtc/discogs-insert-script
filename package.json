@@ -8,7 +8,8 @@
   "scripts": {
     "build": "tsc",
     "start": "node ./bin/app.js",
-    "dev": "ts-node ./src/app.ts"
+    "dev": "ts-node ./src/app.ts",
+    "docker": "docker-compose up -d"
   },
   "dependencies": {
     "global": "^4.4.0",
