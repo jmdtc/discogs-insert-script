@@ -20,14 +20,10 @@ interface ReleaseAttributes {
   releaseDate: Date | null;
   notes: string;
   master_id: number;
-  label_id: number | null;
 }
 
-interface ReleaseCreationAttributes
-  extends Optional<ReleaseAttributes, "label_id"> {}
-
 export default class Release
-  extends Model<ReleaseAttributes, ReleaseCreationAttributes>
+  extends Model<ReleaseAttributes, {}>
   implements ReleaseAttributes
 {
   public id!: number;
@@ -36,14 +32,15 @@ export default class Release
   public releaseDate!: Date | null;
   public notes!: string;
   public master_id!: number;
-  public label_id!: number | null;
 
-  public readonly artists?: Artist;
-  public readonly styles?: Style;
-  public readonly genres?: Genre;
-  public readonly tracks?: Track;
-  public readonly label?: Label;
+  public readonly artists?: Artist[];
+  public readonly styles?: Style[];
+  public readonly genres?: Genre[];
+  public readonly tracks?: Track[];
+  public readonly formats?: Format[];
+  public readonly labels?: Label[];
 
+  public addArtists!: BelongsToManyAddAssociationMixin<Artist, Artist[]>;
   public addStyles!: BelongsToManyAddAssociationMixin<Style, Style[]>;
   public addGenres!: BelongsToManyAddAssociationMixin<Genre, Genre[]>;
   public addFormats!: BelongsToManyAddAssociationMixin<Format, Format[]>;
@@ -53,7 +50,7 @@ export default class Release
     artists: Association<Release, Artist>;
     styles: Association<Release, Style>;
     genres: Association<Release, Genre>;
-    label: Association<Release, Label>;
+    labels: Association<Release, Label>;
     formats: Association<Release, Format>;
     tracks: Association<Release, Track>;
   };
@@ -86,10 +83,6 @@ export const initReleaseModel = async function (
           allowNull: true,
         },
         master_id: {
-          type: new DataTypes.INTEGER(),
-          allowNull: true,
-        },
-        label_id: {
           type: new DataTypes.INTEGER(),
           allowNull: true,
         },

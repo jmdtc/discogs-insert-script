@@ -12,10 +12,6 @@ export default async function (): Promise<Sequelize> {
     "postgresql://unicorn_user:magical_password@localhost:6000/rainbow_database",
     {
       logging: false,
-      pool: {
-        max: 50,
-        idle: 10000,
-      },
     }
   );
 
@@ -34,51 +30,70 @@ export default async function (): Promise<Sequelize> {
   Artist.belongsToMany(Release, {
     through: "artist_releases",
     as: "releases",
+    timestamps: false,
   });
   Release.belongsToMany(Artist, {
     through: "artist_releases",
     as: "artists",
+    timestamps: false,
   });
 
   // M:N Style / Release
   Release.belongsToMany(Style, {
     through: "release_styles",
     as: "styles",
+    timestamps: false,
   });
   Style.belongsToMany(Release, {
     through: "release_styles",
     as: "releases",
+    timestamps: false,
   });
 
   // M:N Genre / Release
   Release.belongsToMany(Genre, {
     through: "release_genres",
     as: "genres",
+    timestamps: false,
   });
   Genre.belongsToMany(Release, {
     through: "release_genres",
     as: "releases",
+    timestamps: false,
   });
 
   // M:N Format / Release
+  const ReleaseFormats = sequelize.define(
+    "release_formats",
+    {
+      // necessary because otherwise sequelize does not support
+      // non unique associations PKEY
+      id: {
+        type: new DataTypes.INTEGER(),
+        primaryKey: true,
+        autoIncrement: true,
+      },
+      description: {
+        type: new DataTypes.STRING(),
+        allowNull: true,
+      },
+    },
+    {
+      timestamps: false,
+      underscored: true,
+    }
+  );
+
   Release.belongsToMany(Format, {
-    through: "release_formats",
+    through: { model: ReleaseFormats, unique: false },
     as: "formats",
-  });
-  Format.belongsToMany(Release, {
-    through: "release_formats",
-    as: "releases",
+    foreignKey: "release_id",
   });
 
-  // O:M Label / Release
-  Label.hasMany(Release, {
+  Format.belongsToMany(Release, {
+    through: { model: ReleaseFormats, unique: false },
     as: "releases",
-    sourceKey: "id",
-    foreignKey: "label_id",
-  });
-  Release.belongsTo(Label, {
-    as: "label",
-    foreignKey: "label_id",
+    foreignKey: "format_id",
   });
 
   // O:M Release / Tracks
@@ -92,15 +107,49 @@ export default async function (): Promise<Sequelize> {
     foreignKey: "release_id",
   });
 
+  // M:N Label / Release with extra columns
+  const LabelReleases = sequelize.define(
+    "label_releases",
+    {
+      // necessary because otherwise sequelize does not support
+      // non unique associations PKEY
+      id: {
+        type: new DataTypes.INTEGER(),
+        primaryKey: true,
+        autoIncrement: true,
+      },
+      catno: {
+        type: new DataTypes.STRING(),
+        allowNull: true,
+      },
+    },
+    {
+      timestamps: false,
+      underscored: true,
+    }
+  );
+
+  Release.belongsToMany(Label, {
+    through: { model: LabelReleases, unique: false },
+    as: "labels",
+    foreignKey: "release_id",
+  });
+  Label.belongsToMany(Release, {
+    through: { model: LabelReleases, unique: false },
+    as: "releases",
+    foreignKey: "label_id",
+  });
+
   // M:N Track / Artist with extra columns
   const TrackArtists = sequelize.define(
     "track_artists",
     {
+      // necessary because otherwise sequelize does not support
+      // non unique associations PKEY
       id: {
-        type: DataTypes.INTEGER,
+        type: new DataTypes.INTEGER(),
         primaryKey: true,
         autoIncrement: true,
-        allowNull: false,
       },
       anv: {
         type: new DataTypes.TEXT(),
@@ -137,6 +186,6 @@ export default async function (): Promise<Sequelize> {
     foreignKey: "artist_id",
   });
 
-  await sequelize.sync({ alter: true });
+  await sequelize.sync({ force: true });
   return sequelize;
 }

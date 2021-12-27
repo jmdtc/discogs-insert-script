@@ -20,7 +20,7 @@ export default class Artist
   public id!: number;
   public name!: string;
 
-  public readonly releases?: Release;
+  public readonly releases?: Release[];
 
   public addRelease!: BelongsToManyAddAssociationMixin<Release, number>;
   public addReleases!: BelongsToManyAddAssociationMixin<Release, Release[]>;

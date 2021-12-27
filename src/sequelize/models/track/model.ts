@@ -31,6 +31,7 @@ export default class Track extends Model<
   public release_id!: number | null;
 
   public readonly release?: Release;
+  public readonly artists?: Artist[];
 
   public addArtist!: BelongsToManyAddAssociationMixin<Artist, number>;
   public addArtists!: BelongsToManyAddAssociationMixin<Artist, Artist[]>;
